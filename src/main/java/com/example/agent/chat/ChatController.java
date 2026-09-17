@@ -1,5 +1,7 @@
 package com.example.agent.chat;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatController {
 
     /** 请求体 */
-    public record ChatRequest(String message) {
+    public record ChatRequest(@NotBlank(message = "不能为空") String message) {
     }
 
     private final ChatClient chatClient;
@@ -35,7 +37,7 @@ public class ChatController {
     }
 
     @PostMapping("/chat")
-    public String chat(@RequestBody ChatRequest request) {
+    public String chat(@Valid @RequestBody ChatRequest request) {
         return chatClient.prompt()
                 .user(request.message())
                 .call()

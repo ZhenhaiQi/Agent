@@ -1,5 +1,7 @@
 package com.example.agent.chat;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExtractController {
 
     /** 请求体 */
-    public record ExtractRequest(String text) {
+    public record ExtractRequest(@NotBlank(message = "不能为空") String text) {
     }
 
     /** 目标结构：字段缺失时留空 */
@@ -38,7 +40,7 @@ public class ExtractController {
     }
 
     @PostMapping("/extract")
-    public PersonInfo extract(@RequestBody ExtractRequest request) {
+    public PersonInfo extract(@Valid @RequestBody ExtractRequest request) {
         return chatClient.prompt()
                 .system("从用户提供的文本中抽取人物信息，信息缺失的字段留空。")
                 .user(request.text())
